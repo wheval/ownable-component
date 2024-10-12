@@ -1,7 +1,7 @@
 use core::starknet::ContractAddress;
 
 #[starknet::interface]
-trait IOwnable<TContractState> {
+pub trait IOwnable<TContractState> {
     fn owner(self: @TContractState) -> ContractAddress;
     fn transfer_ownership(ref self: TContractState, new_owner: ContractAddress);
     fn renounce_ownership(ref self: TContractState);

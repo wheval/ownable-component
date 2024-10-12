@@ -1,9 +1,15 @@
+#[starknet::interface]
+pub trait IOwnableCounter<TContractState> {
+    fn increase_count(ref self: TContractState);
+}
+
 #[starknet::contract]
 mod OwnableCounter {
     use ownable_component::PrivateTrait;
-    use core::starknet::{ContractAddress, get_caller_address};
+    use core::starknet::{ContractAddress};
     use intro_to_components::ownable_component::ownable_component::ownable_component;
     use core::starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
+    use super::IOwnableCounter;
 
     component!(path: ownable_component, storage: ownable, event: OwnableEvent);
 
@@ -31,8 +37,11 @@ mod OwnableCounter {
     }
 
     #[abi(embed_v0)]
-    fn increase_count(ref self: ContractState) {
-        self.ownable.assert_only_owner();
-        self.counter.write(self.counter.read() + 1);
+    impl OwnableCounterImpl of IOwnableCounter<ContractState> {
+        fn increase_count(ref self: ContractState) {
+            self.ownable.assert_only_owner();
+            self.counter.write(self.counter.read() + 1);
+        }
     }
+  
 }
