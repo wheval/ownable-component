@@ -9,6 +9,7 @@ pub trait IOwnable<TContractState> {
 
 mod Errors {
     pub const ZERO_ADDRESS_OWNER: felt252 = 'Owner cannot be address zero';
+    pub const ZERO_ADDRESS_CALLER: felt252 = 'Caller cannot be address zero';
     pub const NOT_OWNER: felt252 = 'Caller not owner';
 }
 
@@ -70,7 +71,7 @@ pub mod ownable_component {
         fn assert_only_owner(self: @ComponentState<TContractState>) {
             let owner: ContractAddress = self.owner.read();
             let caller: ContractAddress = get_caller_address();
-            assert(!caller.is_zero(), Errors::ZERO_ADDRESS_OWNER);
+            assert(!caller.is_zero(), Errors::ZERO_ADDRESS_CALLER);
             assert(caller == owner, Errors::NOT_OWNER);
         }
 

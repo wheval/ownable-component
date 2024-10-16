@@ -1,5 +1,6 @@
 #[starknet::interface]
 pub trait IOwnableCounter<TContractState> {
+    fn get_counter(self: @TContractState) -> u128;
     fn increase_count(ref self: TContractState);
 }
 
@@ -38,10 +39,13 @@ mod OwnableCounter {
 
     #[abi(embed_v0)]
     impl OwnableCounterImpl of IOwnableCounter<ContractState> {
+        fn get_counter(self: @ContractState) -> u128 {
+            self.counter.read()
+        }
+
         fn increase_count(ref self: ContractState) {
             self.ownable.assert_only_owner();
             self.counter.write(self.counter.read() + 1);
         }
     }
-  
 }
